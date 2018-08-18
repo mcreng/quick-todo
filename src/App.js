@@ -12,10 +12,13 @@ class App extends Component {
     super(props);
     // Set the default state of our application
     this.state = { addingTodo: false, pendingTodo: "", todos: [], done_todos: [] };
+
     // We want event handlers to share this context
     this.addTodo = this.addTodo.bind(this);
     this.completeTodo = this.completeTodo.bind(this);
     this.undoTodo = this.undoTodo.bind(this);
+    this.deleteTodo = this.deleteTodo.bind(this);
+
     firestore.collection("todos").onSnapshot(snapshot => {
       let todos = [], done_todos = [];
       snapshot.forEach(doc => {
@@ -23,10 +26,11 @@ class App extends Component {
         todo.id = doc.id;
         if (!todo.completed) todos.push(todo); else done_todos.push(todo);
       });
+
       // Sort our todos based on time added
-      
       todos.sort(sort_by_date);
       done_todos.sort(sort_by_date);
+
       // Anytime the state of our database changes, we update state
       this.setState({ todos, done_todos });
     });
@@ -63,6 +67,18 @@ class App extends Component {
       .update({
         completed: false
       });
+  }
+
+  async deleteTodo(id) {
+    // Remove the todo
+    await firestore
+    .collection("todos")
+    .doc(id)
+    .delete();
+  }
+
+  componentDidMount() {
+    document.title = "Quick Todo"
   }
 
   render() {
@@ -103,6 +119,11 @@ class App extends Component {
                   className="App-todo-complete"
                   type="check"
                 />
+                <Icon
+                  onClick={evt => this.deleteTodo(todo.id)}
+                  className="App-todo-delete"
+                  type="delete"
+                />
               </List.Item>)}
           />
           <p class="list-title">Tasks finished</p>
@@ -116,8 +137,13 @@ class App extends Component {
                 {todo.content}
                 <Icon
                   onClick={evt => this.undoTodo(todo.id)}
-                  className="App-todo-complete"
+                  className="App-todo-uncomplete"
                   type="cross"
+                />
+                <Icon
+                  onClick={evt => this.deleteTodo(todo.id)}
+                  className="App-todo-delete"
+                  type="delete"
                 />
               </List.Item>)}
           />
