@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
-import { Layout, Input, Button, List, Icon, Tag } from "antd";
+import { Layout, Input, Button, List, Icon, Row, Col } from "antd";
 import firestore from "./firestore";
 import './App.css';
 
@@ -99,23 +99,31 @@ class App extends Component {
           <h1>Quick Todo</h1>
         </Header>
         <Content className="App-content">
-          <Input
-            ref="add-todo-input"
-            className="App-add-todo-input"
-            size="large"
-            placeholder="What needs to be done?"
-            disabled={this.state.addingTodo}
-            onChange={evt => this.setState({ pendingTodo: evt.target.value })}
-            value={this.state.pendingTodo}
-            onPressEnter={this.addTodo}
-          />
-          <Button
-            className="App-add-todo-button"
-            size="large"
-            type="primary"
-            onClick={this.addTodo}
-            loading={this.state.addingTodo}
-          >Add Todo</Button>
+        <div align="middle">
+          <Row type="flex" justify="space-between" className="App-add-todo-span">
+            <Col xs={10} sm={12} md={14} lg={16} xl={18}>
+              <Input
+              ref="add-todo-input"
+              className="App-add-todo-input"
+              size="large"
+              placeholder="What needs to be done?"
+              disabled={this.state.addingTodo}
+              onChange={evt => this.setState({ pendingTodo: evt.target.value })}
+              value={this.state.pendingTodo}
+              onPressEnter={this.addTodo}
+              />
+            </Col>
+            <Col align="right">
+              <Button
+                className="App-add-todo-button"
+                size="large"
+                type="primary"
+                onClick={this.addTodo}
+                loading={this.state.addingTodo}
+              >Add Todo</Button>
+            </Col>
+          </Row>
+        </div>
           <p class="list-title">Tasks in progress</p>
           <List
             className="App-todos"
@@ -161,7 +169,6 @@ class App extends Component {
               </List.Item>)}
           />
         </Content>
-        <Footer className="App-footer">&copy; My Company</Footer>
       </Layout>
     );
   }
