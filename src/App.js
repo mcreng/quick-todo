@@ -11,7 +11,11 @@ class App extends Component {
   constructor(props) {
     super(props);
     // Set the default state of our application
-    this.state = { addingTodo: false, pendingTodo: "", todos: [], done_todos: [] };
+    this.state = { addingTodo: false, 
+                   pendingTodo: "", 
+                   todos: [], 
+                   done_todos: [], 
+                   loading: true };
 
     // We want event handlers to share this context
     this.addTodo = this.addTodo.bind(this);
@@ -32,13 +36,13 @@ class App extends Component {
       done_todos.sort(sort_by_date);
 
       // Anytime the state of our database changes, we update state
-      this.setState({ todos, done_todos });
+      this.setState({ todos, done_todos, loading: false });
     });
   }
 
   async addTodo(evt) {
     // Set a flag to indicate loading
-    this.setState({ addingTodo: true });
+    this.setState({ addingTodo: true, loading: true });
     // Add a new todo from the value of the input
     await firestore.collection("todos").add({
       content: this.state.pendingTodo,
@@ -46,10 +50,12 @@ class App extends Component {
       createdAt: Date.now()
     });
     // Remove the loading flag and clear the input
-    this.setState({ addingTodo: false, pendingTodo: "" });
+    this.setState({ addingTodo: false, pendingTodo: "", loading: false });
   }
 
   async completeTodo(id) {
+    // Set a flag to indicate loading
+    this.setState({ loading: true });
     // Mark the todo as completed
     await firestore
       .collection("todos")
@@ -57,9 +63,11 @@ class App extends Component {
       .update({
         completed: true
       });
+      this.setState({ loading: false });
   }
 
   async undoTodo(id) {
+    this.setState({ loading: true });
     // Remove the todo from completed
     await firestore
       .collection("todos")
@@ -67,14 +75,17 @@ class App extends Component {
       .update({
         completed: false
       });
+    this.setState({ loading: false });
   }
 
   async deleteTodo(id) {
+    this.setState({ loading: true });
     // Remove the todo
     await firestore
     .collection("todos")
     .doc(id)
     .delete();
+    this.setState({ loading: false });
   }
 
   componentDidMount() {
@@ -111,6 +122,7 @@ class App extends Component {
             size="large"
             bordered
             dataSource={this.state.todos}
+            loading={this.state.loading}
             renderItem={todo => (
               <List.Item>
                 {todo.content}
@@ -132,6 +144,7 @@ class App extends Component {
             size="large"
             bordered
             dataSource={this.state.done_todos}
+            loading={this.state.loading}
             renderItem={todo => (
               <List.Item>
                 {todo.content}
