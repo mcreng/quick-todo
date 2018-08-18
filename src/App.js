@@ -1,34 +1,34 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
-import { Layout, Input, Button, List, Icon } from "antd";
+import { Layout, Input, Button, List, Icon, Tag } from "antd";
 import firestore from "./firestore";
 import './App.css';
 
 const { Header, Footer, Content } = Layout;
+const sort_by_date = (a, b) => { new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime() };
 
 class App extends Component {
   constructor(props) {
     super(props);
     // Set the default state of our application
-    this.state = { addingTodo: false, pendingTodo: "", todos: [] };
+    this.state = { addingTodo: false, pendingTodo: "", todos: [], done_todos: [] };
     // We want event handlers to share this context
     this.addTodo = this.addTodo.bind(this);
     this.completeTodo = this.completeTodo.bind(this);
+    this.undoTodo = this.undoTodo.bind(this);
     firestore.collection("todos").onSnapshot(snapshot => {
-      let todos = [];
+      let todos = [], done_todos = [];
       snapshot.forEach(doc => {
         const todo = doc.data();
         todo.id = doc.id;
-        if (!todo.completed) todos.push(todo);
+        if (!todo.completed) todos.push(todo); else done_todos.push(todo);
       });
       // Sort our todos based on time added
-      todos.sort(function(a, b) {
-        return (
-          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-        );
-      });
+      
+      todos.sort(sort_by_date);
+      done_todos.sort(sort_by_date);
       // Anytime the state of our database changes, we update state
-      this.setState({ todos });
+      this.setState({ todos, done_todos });
     });
   }
 
@@ -49,8 +49,18 @@ class App extends Component {
     await firestore
       .collection("todos")
       .doc(id)
-      .set({
+      .update({
         completed: true
+      });
+  }
+
+  async undoTodo(id) {
+    // Remove the todo from completed
+    await firestore
+      .collection("todos")
+      .doc(id)
+      .update({
+        completed: false
       });
   }
 
@@ -78,6 +88,7 @@ class App extends Component {
             onClick={this.addTodo}
             loading={this.state.addingTodo}
           >Add Todo</Button>
+          <p class="list-title">Tasks in progress</p>
           <List
             className="App-todos"
             size="large"
@@ -90,6 +101,22 @@ class App extends Component {
                   onClick={evt => this.completeTodo(todo.id)}
                   className="App-todo-complete"
                   type="check"
+                />
+              </List.Item>)}
+          />
+          <p class="list-title">Tasks finished</p>
+          <List
+            className="App-done-todos"
+            size="large"
+            bordered
+            dataSource={this.state.done_todos}
+            renderItem={todo => (
+              <List.Item>
+                {todo.content}
+                <Icon
+                  onClick={evt => this.undoTodo(todo.id)}
+                  className="App-todo-complete"
+                  type="cross"
                 />
               </List.Item>)}
           />

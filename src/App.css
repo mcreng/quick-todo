@@ -18,11 +18,11 @@
   margin-right: 5px;
 }
 
-.App-todos {
+.App-todos, .App-done-todos {
   background-color: white;
   max-width: 400px;
   margin: 0 auto;
-  margin-top: 20px;
+  /* margin-top: 20px; */
   margin-bottom: 20px;
 }
 
@@ -32,4 +32,11 @@
   cursor: pointer;
   position: absolute;
   right: 24px;
+}
+
+.list-title {
+  margin: 0 auto;
+  margin-top: 20px;
+  font-size: 18px;
+  margin-bottom: 5px;
 }
