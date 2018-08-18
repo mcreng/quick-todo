@@ -5,7 +5,7 @@ import firestore from "./firestore";
 import './App.css';
 
 const { Header, Footer, Content } = Layout;
-const sort_by_date = (a, b) => { new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime() };
+const sort_by_date = (a, b) => { return new Date(a.createdAt).getTime() > new Date(b.createdAt).getTime() };
 
 class App extends Component {
   constructor(props) {
@@ -38,7 +38,8 @@ class App extends Component {
     // Add a new todo from the value of the input
     await firestore.collection("todos").add({
       content: this.state.pendingTodo,
-      completed: false
+      completed: false,
+      createdAt: Date.now()
     });
     // Remove the loading flag and clear the input
     this.setState({ addingTodo: false, pendingTodo: "" });
