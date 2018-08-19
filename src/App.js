@@ -98,12 +98,12 @@ class App extends Component {
     return (
       <Layout className="App">
         <Header className="App-header">
-          <h1>Quick Todo</h1>
+          <p>Quick Todo</p>
         </Header>
         <Content className="App-content">
         <div align="middle">
           <Row type="flex" justify="space-between" className="App-add-todo-span">
-            <Col xs={10} sm={12} md={14} lg={16} xl={18}>
+            <Col span={17} offset={2} >
               <Input
               ref="add-todo-input"
               className="App-add-todo-input"
@@ -115,7 +115,7 @@ class App extends Component {
               onPressEnter={this.addTodo}
               />
             </Col>
-            <Col align="right">
+            <Col align="right" span={3}>
               <Button
                 className="App-add-todo-button"
                 size="large"
@@ -124,6 +124,7 @@ class App extends Component {
                 loading={this.state.addingTodo}
               >Add Todo</Button>
             </Col>
+            <Col offset={2}/>
           </Row>
         </div>
           <Row>
@@ -177,6 +178,9 @@ class App extends Component {
             </Col>
           </Row>
         </Content>
+        <Footer style={{ textAlign: 'center' }} className="App-footer">
+          Using Nodejs, React and AntDesign. Tutorial originated from <a href="https://dev.to/nbrempel/using-react-firebase-and-ant-design-to-quickly-prototype-web-applications-3hpa?utm_source=digest_mailer&utm_medium=email&utm_campaign=digest_email">here</a>.
+        </Footer>
       </Layout>
     );
   }

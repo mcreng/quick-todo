@@ -4,28 +4,43 @@
   text-align: center;
 }
 
-.App-header h1 {
+.App-header {
+  height: 10vh;
+}
+
+.App-header p {
   color: whitesmoke;
+  font-size: 5vh;
+  line-height: 10vh;
 }
 
 .App-content {
   padding-top: 5vh;
   padding-bottom: 5vh;
+  min-height: 85vh;
+}
+
+.App-footer {
+  height: 5vh;
+}
+
+.App-footer {
+  font-size: 2vh;
+  line-height: 5vh;
+  padding: 0 auto;
 }
 
 .App-add-todo-input {
-  max-width: 30vw;
+  min-width: 30vw;
   margin-right: 1vh;
 }
 
 .App-add-todo-span {
-  max-width: 40vw;
-  left: 50%;
+  min-width: 40vw;
 }
 
 .App-todos, .App-done-todos {
   background-color: white;
-  max-width: 40vw;
   margin: 0 auto;
   margin-bottom: 4vh;
 }
