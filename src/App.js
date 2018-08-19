@@ -124,7 +124,7 @@ class App extends Component {
             </Col>
           </Row>
         </div>
-          <p class="list-title">Tasks in progress</p>
+          <p className="list-title">Tasks in progress</p>
           <List
             className="App-todos"
             size="large"
@@ -146,7 +146,7 @@ class App extends Component {
                 />
               </List.Item>)}
           />
-          <p class="list-title">Tasks finished</p>
+          <p className="list-title">Tasks finished</p>
           <List
             className="App-done-todos"
             size="large"
