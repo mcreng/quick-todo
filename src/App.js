@@ -44,11 +44,13 @@ class App extends Component {
     // Set a flag to indicate loading
     this.setState({ addingTodo: true, loading: true });
     // Add a new todo from the value of the input
-    await firestore.collection("todos").add({
-      content: this.state.pendingTodo,
-      completed: false,
-      createdAt: Date.now()
-    });
+    if (this.state.pendingTodo) {
+      await firestore.collection("todos").add({
+        content: this.state.pendingTodo,
+        completed: false,
+        createdAt: Date.now()
+      });
+    }
     // Remove the loading flag and clear the input
     this.setState({ addingTodo: false, pendingTodo: "", loading: false });
   }
@@ -124,50 +126,56 @@ class App extends Component {
             </Col>
           </Row>
         </div>
-          <p className="list-title">Tasks in progress</p>
-          <List
-            className="App-todos"
-            size="large"
-            bordered
-            dataSource={this.state.todos}
-            loading={this.state.loading}
-            renderItem={todo => (
-              <List.Item>
-                {todo.content}
-                <Icon
-                  onClick={evt => this.completeTodo(todo.id)}
-                  className="App-todo-complete"
-                  type="check"
-                />
-                <Icon
-                  onClick={evt => this.deleteTodo(todo.id)}
-                  className="App-todo-delete"
-                  type="delete"
-                />
-              </List.Item>)}
-          />
-          <p className="list-title">Tasks finished</p>
-          <List
-            className="App-done-todos"
-            size="large"
-            bordered
-            dataSource={this.state.done_todos}
-            loading={this.state.loading}
-            renderItem={todo => (
-              <List.Item>
-                {todo.content}
-                <Icon
-                  onClick={evt => this.undoTodo(todo.id)}
-                  className="App-todo-uncomplete"
-                  type="cross"
-                />
-                <Icon
-                  onClick={evt => this.deleteTodo(todo.id)}
-                  className="App-todo-delete"
-                  type="delete"
-                />
-              </List.Item>)}
-          />
+          <Row>
+            <Col lg={{span: 9, offset: 2}}>
+              <p className="list-title">Tasks in progress</p>
+              <List
+                className="App-todos"
+                size="large"
+                bordered
+                dataSource={this.state.todos}
+                loading={this.state.loading}
+                renderItem={todo => (
+                  <List.Item>
+                    {todo.content}
+                    <Icon
+                      onClick={evt => this.completeTodo(todo.id)}
+                      className="App-todo-complete"
+                      type="check"
+                    />
+                    <Icon
+                      onClick={evt => this.deleteTodo(todo.id)}
+                      className="App-todo-delete"
+                      type="delete"
+                    />
+                  </List.Item>)}
+              />
+            </Col>
+            <Col lg={{span: 9, offset: 2}}>
+              <p className="list-title">Tasks finished</p>
+              <List
+                className="App-done-todos"
+                size="large"
+                bordered
+                dataSource={this.state.done_todos}
+                loading={this.state.loading}
+                renderItem={todo => (
+                  <List.Item>
+                    {todo.content}
+                    <Icon
+                      onClick={evt => this.undoTodo(todo.id)}
+                      className="App-todo-uncomplete"
+                      type="cross"
+                    />
+                    <Icon
+                      onClick={evt => this.deleteTodo(todo.id)}
+                      className="App-todo-delete"
+                      type="delete"
+                    />
+                  </List.Item>)}
+              />
+            </Col>
+          </Row>
         </Content>
       </Layout>
     );
